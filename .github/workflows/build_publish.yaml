@@ -14,6 +14,45 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
 
+      - name: Create settings.xml
+        run: |
+          echo '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">' > settings.xml
+          echo '    <localRepository>/root/.m2/repository</localRepository>' >> settings.xml
+          echo '    <interactiveMode>true</interactiveMode>' >> settings.xml
+          echo '    <offline>false</offline>' >> settings.xml
+          echo '    <pluginGroups>' >> settings.xml
+          echo '        <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>' >> settings.xml
+          echo '    </pluginGroups>' >> settings.xml
+          echo '    <activeProfiles>' >> settings.xml
+          echo '        <activeProfile>github</activeProfile>' >> settings.xml
+          echo '    </activeProfiles>' >> settings.xml
+          echo '    <profiles>' >> settings.xml
+          echo '        <profile>' >> settings.xml
+          echo '            <id>github</id>' >> settings.xml
+          echo '            <repositories>' >> settings.xml
+          echo '                <repository>' >> settings.xml
+          echo '                    <id>central</id>' >> settings.xml
+          echo '                    <url>https://repo1.maven.org/maven2</url>' >> settings.xml
+          echo '                </repository>' >> settings.xml
+          echo '                <repository>' >> settings.xml
+          echo '                    <id>github</id>' >> settings.xml
+          echo '                    <url>https://maven.pkg.github.com/hakimamarullah/starline-shared-module</url>' >> settings.xml
+          echo '                    <snapshots>' >> settings.xml
+          echo '                        <enabled>true</enabled>' >> settings.xml
+          echo '                    </snapshots>' >> settings.xml
+          echo '                </repository>' >> settings.xml
+          echo '            </repositories>' >> settings.xml
+          echo '        </profile>' >> settings.xml
+          echo '    </profiles>' >> settings.xml
+          echo '    <servers>' >> settings.xml
+          echo '        <server>' >> settings.xml
+          echo '            <id>github</id>' >> settings.xml
+          echo '            <username>${{ secrets.USERNAME_GITHUB }}</username>' >> settings.xml
+          echo '            <password>${{ secrets.PRIVATE_TOKEN }}</password>' >> settings.xml
+          echo '        </server>' >> settings.xml
+          echo '    </servers>' >> settings.xml
+          echo '</settings>' >> settings.xml
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -26,6 +65,3 @@ jobs:
           context: .
           push: true
           tags: ${{ vars.DOCKER_IMAGE_NAME }}:${{ vars.DOCKER_IMAGE_TAG }}
-        env:
-          USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
-          PRIVATE_TOKEN: ${{ secrets.PRIVATE_TOKEN }}
