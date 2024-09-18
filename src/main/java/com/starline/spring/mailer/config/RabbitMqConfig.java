@@ -5,8 +5,11 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Optional;
 
 /*
 @Author hakim a.k.a. Hakim Amarullah
@@ -20,16 +23,28 @@ public class RabbitMqConfig {
 
     public static final String RABBIT_LISTENER_CONTAINER_FACTORY = "rabbitListenerContainerFactory";
 
+    @Value("${spring.rabbitmq.host:localhost}")
+    private String host;
+
+    @Value("${spring.rabbitmq.username:guest}")
+    private String username;
+
+    @Value("${spring.rabbitmq.password:guest}")
+    private String password;
+
+    @Value("${spring.rabbitmq.virtual-host}")
+    private String virtualHost;
+
+    @Value("${spring.rabbitmq.port:5672}")
+    private int port;
     @Bean
     public CachingConnectionFactory cachingConnectionFactory() {
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
-        cachingConnectionFactory.setHost("localhost");
-        cachingConnectionFactory.setUsername("guest");
-        cachingConnectionFactory.setPassword("guest");
-        cachingConnectionFactory.setVirtualHost("/");
-        cachingConnectionFactory.setPort(5672);
-
-        cachingConnectionFactory.setConnectionTimeout(10000);
+        cachingConnectionFactory.setHost(host);
+        cachingConnectionFactory.setUsername(username);
+        cachingConnectionFactory.setPassword(password);
+        cachingConnectionFactory.setVirtualHost(Optional.ofNullable(virtualHost).orElse("/"));
+        cachingConnectionFactory.setPort(port);
         return cachingConnectionFactory;
     }
 
