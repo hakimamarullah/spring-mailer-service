@@ -3,6 +3,7 @@ WORKDIR /opt/app
 
 COPY .mvn/ .mvn
 COPY settings.xml /root/.m2/settings.xml
+RUN cat /root/.m2/settings.xml
 
 COPY mvnw pom.xml ./
 
