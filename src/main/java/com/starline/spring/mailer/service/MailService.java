@@ -11,6 +11,7 @@ import com.starline.shared.dto.mail.EmailAttachment;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,6 +19,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -55,10 +57,11 @@ public class MailService {
         helper.setSubject(subject);
         helper.setText(text, isHtml);
 
+
         // Add attachments
         if (attachments != null) {
             for (var entry : attachments) {
-                String filename = entry.getFileName();
+                String filename = Optional.ofNullable(entry.getFileName()).orElse(RandomStringUtils.randomAlphanumeric(20));
                 byte[] content = entry.getContent();
                 ByteArrayResource byteArrayResource = new ByteArrayResource(content);
                 helper.addAttachment(filename, byteArrayResource);

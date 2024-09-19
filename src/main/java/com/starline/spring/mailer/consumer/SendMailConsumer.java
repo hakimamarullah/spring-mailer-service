@@ -17,6 +17,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,11 @@ public class SendMailConsumer {
                 emailRequest.getIsHtml(),
                 emailRequest.getAttachments());
         log.info("Email sent successfully!");
+    }
+
+    @Recover
+    public void recover(Exception e) {
+        log.error("{}", e.getMessage(), e);
     }
 
 }
