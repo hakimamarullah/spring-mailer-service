@@ -39,8 +39,12 @@ RUN ${JAVA_HOME}/bin/jlink \
 
 FROM debian:stretch-slim
 
-ENV JAVA_OPTS=""
-ENV JAVA_ARGS=""
+ARG JAVA_OPTS
+ENV JAVA_OPTS=${JAVA_OPTS}
+
+ARG JAVA_ARGS
+ENV JAVA_ARGS=${JAVA_ARGS}
+
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
 
